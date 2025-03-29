@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        input {
+            width: 60%;
+            padding: 10px;
+            margin: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: blue;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #shortened-url {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>URL Shortener</h1>
+    <input type="text" id="original-url" placeholder="Enter URL to shorten">
+    <button onclick="shortenUrl()">Shorten</button>
+    <div id="shortened-url"></div>
+
+    <script>
+    async function shortenUrl() {
+        const urlInput = document.getElementById("original-url").value;
+
+        const response = await fetch("http://127.0.0.1:5000/api/shorten", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ url: urlInput })
+        });
+
+        const data = await response.json();
+
+        if (data.short_url) {
+            document.getElementById("shortened-url").innerHTML =
+                `<p>Shortened URL: <a href="${data.short_url}" target="_blank">${data.short_url}</a></p>`;
+        } else {
+            document.getElementById("shortened-url").innerHTML = `<p style="color: red;">Error: ${data.error}</p>`;
+        }
+    }
+</script>
+</body>
+</html>
